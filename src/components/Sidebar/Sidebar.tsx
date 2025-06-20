@@ -1,6 +1,7 @@
+import './Sidebar.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { CreateTaskModal } from './CreateTaskModal';
+import { CreateTaskModal } from '../CreateTaskModal/CreateTaskModal';
 
 export const Sidebar = () => {
   const navigate = useNavigate();

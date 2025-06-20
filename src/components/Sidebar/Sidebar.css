@@ -1,0 +1,56 @@
+@import "tailwindcss";
+.sidebar {
+  width: 16rem;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  position: relative;
+}
+.sidebar-title {
+  padding: 1.5rem;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2563eb;
+}
+.sidebar-nav {
+  margin-top: 1.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.sidebar-link, .sidebar-btn {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  color: #374151;
+  border-radius: 0.5rem;
+  transition: background 0.2s, color 0.2s;
+  background: none;
+  border: none;
+  width: 100%;
+  cursor: pointer;
+}
+.sidebar-link:hover, .sidebar-btn:hover {
+  background: #eff6ff;
+  color: #2563eb;
+}
+.sidebar-logout {
+  position: absolute;
+  bottom: 0;
+  width: 16rem;
+  padding: 1rem;
+}
+.sidebar-logout-btn {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  color: #374151;
+  border-radius: 0.5rem;
+  transition: background 0.2s, color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.sidebar-logout-btn:hover {
+  background: #fef2f2;
+  color: #dc2626;
+}

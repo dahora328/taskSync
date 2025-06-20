@@ -1,7 +1,8 @@
-import { DashboardLayout } from '../components/DashboardLayout';
-import { Header } from '../components/Header';
-import { ProjectProgressChart } from '../components/ProjectProgressChart';
+import { DashboardLayout } from '../components/DashboardLayout/DashboardLayout';
+import { Header } from '../components/Header/Header';
+import { ProjectProgressChart } from '../components/ProjectProgressChart/ProjectProgressChart';
 import { TaskTable } from '../components/TaskTable';
+
 
 export default function Reports() {
   return (
