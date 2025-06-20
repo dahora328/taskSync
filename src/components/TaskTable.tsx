@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import './TaskTable.css';
 
 interface Task {
   id: number;
@@ -47,9 +48,9 @@ const statusLabels = {
 };
 
 const statusColors = {
-  'to-do': 'bg-yellow-100 text-yellow-800',
-  'in-progress': 'bg-blue-100 text-blue-800',
-  'done': 'bg-green-100 text-green-800',
+  'to-do': 'task-table-status-todo',
+  'in-progress': 'task-table-status-in-progress',
+  'done': 'task-table-status-done',
 };
 
 function isWithinLastDays(dateStr: string, days: number) {
@@ -65,15 +66,15 @@ export const TaskTable = () => {
   const filteredTasks = mockTasks.filter((task) => isWithinLastDays(task.dueDate, period));
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-      <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-4">
-        <h3 className="text-lg font-semibold text-gray-900 flex-1">Tarefas Recentes</h3>
-        <div>
-          <label className="text-sm text-gray-700 mr-2">Período:</label>
+    <div className="task-table-container">
+      <div className="task-table-header">
+        <h3 className="task-table-title">Tarefas Recentes</h3>
+        <div className="task-table-controls">
+          <label className="task-table-label">Período:</label>
           <select
             value={period}
             onChange={e => setPeriod(Number(e.target.value))}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+            className="task-table-select"
           >
             <option value={7}>Última semana</option>
             <option value={14}>Últimas 2 semanas</option>
@@ -82,36 +83,36 @@ export const TaskTable = () => {
           </select>
         </div>
       </div>
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
+      <div className="task-table-wrapper">
+        <table className="task-table">
+          <thead>
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tarefa</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Projeto</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vencimento</th>
+              <th>Tarefa</th>
+              <th>Projeto</th>
+              <th>Status</th>
+              <th>Vencimento</th>
             </tr>
           </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+          <tbody>
             {filteredTasks.length === 0 && (
               <tr>
-                <td colSpan={4} className="text-center text-gray-500 py-6">Nenhuma tarefa encontrada para o período selecionado.</td>
+                <td colSpan={4} className="task-table-empty">Nenhuma tarefa encontrada para o período selecionado.</td>
               </tr>
             )}
             {filteredTasks.map((task) => (
-              <tr key={task.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{task.title}</div>
+              <tr key={task.id}>
+                <td>
+                  <div className="task-table-cell-title">{task.title}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{task.project}</div>
+                <td>
+                  <div className="task-table-cell-project">{task.project}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${statusColors[task.status]}`}>
+                <td>
+                  <span className={`task-table-status ${statusColors[task.status]}`}>
                     {statusLabels[task.status]}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td>
                   {new Date(task.dueDate).toLocaleDateString('pt-BR')}
                 </td>
               </tr>

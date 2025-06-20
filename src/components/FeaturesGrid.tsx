@@ -1,10 +1,12 @@
+import './FeaturesGrid.css';
+
 export const FeaturesGrid = () => {
   const features = [
     {
       title: 'Crie projetos',
       icon: (
         <svg
-          className="w-12 h-12 text-blue-600"
+          className="features-icon"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -23,7 +25,7 @@ export const FeaturesGrid = () => {
       title: 'Atribua tarefas',
       icon: (
         <svg
-          className="w-12 h-12 text-blue-600"
+          className="features-icon"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -42,7 +44,7 @@ export const FeaturesGrid = () => {
       title: 'Acompanhe progressos',
       icon: (
         <svg
-          className="w-12 h-12 text-blue-600"
+          className="features-icon"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -60,16 +62,16 @@ export const FeaturesGrid = () => {
   ];
 
   return (
-    <div className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <div className="features-section">
+      <div className="features-container">
+        <div className="features-grid">
           {features.map((feature, index) => (
             <div
               key={index}
-              className="flex flex-col items-center p-6 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow"
+              className="features-card"
             >
-              <div className="mb-4">{feature.icon}</div>
-              <h3 className="text-xl font-semibold text-gray-900">
+              <div className="features-icon">{feature.icon}</div>
+              <h3 className="features-title">
                 {feature.title}
               </h3>
             </div>

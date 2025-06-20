@@ -5,6 +5,7 @@ import { z } from 'zod';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import './AuthForm.css';
 
 // Schemas de validação
 const loginSchema = z.object({
@@ -62,73 +63,73 @@ export const AuthForm = ({ type }: AuthFormProps) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-blue-50 to-white px-4">
+    <div className="auth-container">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md"
+        className="auth-form"
       >
-        <h2 className="text-3xl font-bold text-center text-blue-700 mb-6">
+        <h2 className="auth-title">
           {isLogin ? 'Entrar' : 'Criar Conta'}
         </h2>
         {!isLogin && (
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-1">Nome</label>
+          <div className="auth-field">
+            <label className="auth-label">Nome</label>
             <input
               type="text"
               {...register('name')}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="auth-input"
               placeholder="Seu nome"
             />
             {('name' in errors) && errors.name && (
-              <span className="text-red-500 text-sm">{errors.name.message as string}</span>
+              <span className="auth-error">{errors.name.message as string}</span>
             )}
           </div>
         )}
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-1">E-mail</label>
+        <div className="auth-field">
+          <label className="auth-label">E-mail</label>
           <input
             type="email"
             {...register('email')}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+            className="auth-input"
             placeholder="seu@email.com"
           />
           {errors.email && (
-            <span className="text-red-500 text-sm">{errors.email.message as string}</span>
+            <span className="auth-error">{errors.email.message as string}</span>
           )}
         </div>
-        <div className="mb-4">
-          <label className="block text-gray-700 mb-1">Senha</label>
+        <div className="auth-field">
+          <label className="auth-label">Senha</label>
           <input
             type="password"
             {...register('password')}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+            className="auth-input"
             placeholder="Sua senha"
           />
           {errors.password && (
-            <span className="text-red-500 text-sm">{errors.password.message as string}</span>
+            <span className="auth-error">{errors.password.message as string}</span>
           )}
         </div>
         {!isLogin && (
-          <div className="mb-4">
-            <label className="block text-gray-700 mb-1">Confirmar Senha</label>
+          <div className="auth-field">
+            <label className="auth-label">Confirmar Senha</label>
             <input
               type="password"
               {...register('confirmPassword')}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="auth-input"
               placeholder="Repita sua senha"
             />
             {('confirmPassword' in errors) && errors.confirmPassword && (
-              <span className="text-red-500 text-sm">{errors.confirmPassword.message as string}</span>
+              <span className="auth-error">{errors.confirmPassword.message as string}</span>
             )}
           </div>
         )}
         {apiError && (
-          <div className="mb-4 text-red-600 text-center text-sm">{apiError}</div>
+          <div className="auth-api-error">{apiError}</div>
         )}
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-60"
+          className="auth-button"
         >
           {isLogin ? 'Entrar' : 'Cadastrar'}
         </button>
