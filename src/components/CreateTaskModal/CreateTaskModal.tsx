@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import axios from 'axios';
 import { useState } from 'react';
+import { useToast } from '../Toast/ToastContext';
 
 const createTaskSchema = z.object({
   title: z.string().min(1, 'Título obrigatório'),
@@ -27,6 +28,7 @@ interface CreateTaskModalProps {
 }
 
 export const CreateTaskModal = ({ isOpen, onClose }: CreateTaskModalProps) => {
+  const { showToast } = useToast();
   const [apiError, setApiError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
@@ -46,12 +48,15 @@ export const CreateTaskModal = ({ isOpen, onClose }: CreateTaskModalProps) => {
       await axios.post('/api/tasks', data);
       setSuccess(true);
       reset();
+      showToast('Tarefa criada com sucesso!', 'success');
       setTimeout(() => {
         setSuccess(false);
         onClose();
       }, 1200);
     } catch (err: any) {
-      setApiError(err.response?.data?.message || 'Erro ao criar tarefa');
+      const errorMessage = err.response?.data?.message || 'Erro ao criar tarefa';
+      setApiError(errorMessage);
+      showToast(errorMessage, 'error');
     }
   };
 
@@ -70,11 +75,11 @@ export const CreateTaskModal = ({ isOpen, onClose }: CreateTaskModalProps) => {
         <h2 className="text-2xl font-bold text-blue-700 mb-6 text-center">Criar Nova Tarefa</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
-            <label className="block text-blue-600 mb-1">Título *</label>
+            <label className="block text-black mb-1">Título *</label>
             <input
               type="text"
               {...register('title')}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full px-4 py-2 text-black border border-gray-300 border-blu rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
               placeholder="Título da tarefa"
             />
             {errors.title && (
@@ -82,27 +87,27 @@ export const CreateTaskModal = ({ isOpen, onClose }: CreateTaskModalProps) => {
             )}
           </div>
           <div className="mb-4">
-            <label className="block text-blue-600 mb-1">Descrição</label>
+            <label className="block text-black mb-1">Descrição</label>
             <textarea
               {...register('description')}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full px-4 py-2 text-black border border-gray-300 border-blu rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
               placeholder="Descrição da tarefa (opcional)"
               rows={3}
             />
           </div>
           <div className="mb-4">
-            <label className="block text-blue-600 mb-1">Data de Vencimento</label>
+            <label className="block text-black mb-1">Data de Vencimento</label>
             <input
               type="date"
               {...register('due_date')}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full px-4 py-2 bor der text-black border border-gray-300 border-blu rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             />
           </div>
           <div className="mb-6">
-            <label className="block text-blue-600 mb-1">Projeto *</label>
+            <label className="block text-black mb-1">Projeto *</label>
             <select
               {...register('project_id')}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+              className="w-full px-4 py-2 text-black border border-gray-300 border-blu rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
             >
               <option value="">Selecione um projeto</option>
               {mockProjects.map((project) => (

@@ -5,6 +5,7 @@ import { z } from 'zod';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useToast } from '../Toast/ToastContext';
 import './AuthForm.css';
 
 // Schemas de validação
@@ -34,6 +35,7 @@ interface AuthFormProps {
 
 export const AuthForm = ({ type }: AuthFormProps) => {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [apiError, setApiError] = useState<string | null>(null);
 
   const isLogin = type === 'login';
@@ -56,9 +58,18 @@ export const AuthForm = ({ type }: AuthFormProps) => {
         : { name: data.name, email: data.email, password: data.password };
       const response = await axios.post(url, payload);
       localStorage.setItem('token', response.data.token);
+      
+      if (isLogin) {
+        showToast('Login realizado com sucesso!', 'success');
+      } else {
+        showToast('Conta criada com sucesso!', 'success');
+      }
+      
       navigate('/dashboard');
     } catch (err: any) {
-      setApiError(err.response?.data?.message || 'Erro ao autenticar');
+      const errorMessage = err.response?.data?.message || 'Erro ao autenticar';
+      setApiError(errorMessage);
+      showToast(errorMessage, 'error');
     }
   };
 

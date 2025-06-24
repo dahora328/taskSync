@@ -1,5 +1,6 @@
-import { HeroSection } from '../components/HeroSection';
-import { FeaturesGrid } from '../components/FeaturesGrid';
+import { FeaturesGrid } from "../components/FeaturesGrid/FeaturesGrid";
+import { HeroSection } from "../components/HeroSection/HeroSection";
+
 
 export const Home = () => {
   return (
