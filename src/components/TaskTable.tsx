@@ -74,12 +74,12 @@ export const TaskTable = () => {
           <select
             value={period}
             onChange={e => setPeriod(Number(e.target.value))}
-            className="task-table-select"
+            className="task-table-select text-black"
           >
-            <option value={7}>Última semana</option>
-            <option value={14}>Últimas 2 semanas</option>
-            <option value={30}>Último mês</option>
-            <option value={90}>Últimos 3 meses</option>
+            <option value={7} className='text-black'>Última semana</option>
+            <option value={14} className='text-black'>Últimas 2 semanas</option>
+            <option value={30} className='text-black'>Último mês</option>
+            <option value={90} className='text-black'>Últimos 3 meses</option>
           </select>
         </div>
       </div>

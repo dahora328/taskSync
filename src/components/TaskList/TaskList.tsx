@@ -80,30 +80,30 @@ export const TaskList = () => {
         <div className="p-6 border-b border-gray-200">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-blue-600 mb-1">
                 Filtrar por Status
               </label>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-200"
               >
-                <option value="all">Todos os Status</option>
-                <option value="to-do">Pendente</option>
-                <option value="in-progress">Em Progresso</option>
-                <option value="done">Concluída</option>
+                <option value="all" className='text-black'>Todos os Status</option>
+                <option value="to-do" className='text-black'>Pendente</option>
+                <option value="in-progress" className='text-black'>Em Progresso</option>
+                <option value="done" className='text-black'>Concluída</option>
               </select>
             </div>
             <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-blue-600 mb-1">
                 Filtrar por Projeto
               </label>
               <select
                 value={projectFilter}
                 onChange={(e) => setProjectFilter(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-200"
               >
-                <option value="all">Todos os Projetos</option>
+                <option value="all" className='text-black'>Todos os Projetos</option>
                 {projects.map((project) => (
                   <option key={project} value={project}>
                     {project}
@@ -159,11 +159,11 @@ export const TaskList = () => {
                       <select
                         value={task.status}
                         onChange={(e) => handleStatusChange(task.id, e.target.value as Task['status'])}
-                        className="text-xs border border-gray-300 rounded px-2 py-1"
+                        className="text-xs border border-gray-300 rounded px-2 py-1 text-black"
                       >
-                        <option value="to-do">Pendente</option>
-                        <option value="in-progress">Em Progresso</option>
-                        <option value="done">Concluída</option>
+                        <option value="to-do" className='text-black'>Pendente</option>
+                        <option value="in-progress" className='text-black'>Em Progresso</option>
+                        <option value="done" className='text-black'>Concluída</option>
                       </select>
                       <button
                         onClick={() => handleDelete(task.id)}

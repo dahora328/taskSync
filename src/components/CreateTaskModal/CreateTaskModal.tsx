@@ -58,11 +58,11 @@ export const CreateTaskModal = ({ isOpen, onClose }: CreateTaskModalProps) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white bg-opacity-40">
       <div className="bg-white rounded-xl shadow-lg w-full max-w-lg p-8 relative">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl font-bold"
+          className="absolute top-4 right-4 text-gray-400 hover:text-blue-600 text-2xl font-bold"
           aria-label="Fechar"
         >
           ×
@@ -70,7 +70,7 @@ export const CreateTaskModal = ({ isOpen, onClose }: CreateTaskModalProps) => {
         <h2 className="text-2xl font-bold text-blue-700 mb-6 text-center">Criar Nova Tarefa</h2>
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-1">Título *</label>
+            <label className="block text-blue-600 mb-1">Título *</label>
             <input
               type="text"
               {...register('title')}
@@ -82,7 +82,7 @@ export const CreateTaskModal = ({ isOpen, onClose }: CreateTaskModalProps) => {
             )}
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-1">Descrição</label>
+            <label className="block text-blue-600 mb-1">Descrição</label>
             <textarea
               {...register('description')}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"
@@ -91,7 +91,7 @@ export const CreateTaskModal = ({ isOpen, onClose }: CreateTaskModalProps) => {
             />
           </div>
           <div className="mb-4">
-            <label className="block text-gray-700 mb-1">Data de Vencimento</label>
+            <label className="block text-blue-600 mb-1">Data de Vencimento</label>
             <input
               type="date"
               {...register('due_date')}
@@ -99,7 +99,7 @@ export const CreateTaskModal = ({ isOpen, onClose }: CreateTaskModalProps) => {
             />
           </div>
           <div className="mb-6">
-            <label className="block text-gray-700 mb-1">Projeto *</label>
+            <label className="block text-blue-600 mb-1">Projeto *</label>
             <select
               {...register('project_id')}
               className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200"

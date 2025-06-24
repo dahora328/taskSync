@@ -46,6 +46,7 @@
 
 .hero-button-primary:hover {
   background-color: #1d4ed8;
+  color: white;
 }
 
 .hero-button-secondary {
