@@ -70,4 +70,33 @@
   .features-title {
     font-size: 1.125rem;
   }
+}
+
+@media (max-width: 480px) {
+  .features-section {
+    padding: 1rem 0;
+  }
+  .features-container {
+    padding: 0 0.5rem;
+  }
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .features-card {
+    padding: 0.5rem;
+    min-width: 220px;
+    max-width: 100vw;
+  }
+  .features-title {
+    font-size: 1rem;
+  }
+  .features-icon svg {
+    width: 2rem;
+    height: 2rem;
+  }
+  .features-grid {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
 } 

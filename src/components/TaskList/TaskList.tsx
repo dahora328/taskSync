@@ -205,7 +205,7 @@ export const TaskList = () => {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Buscar tarefas por título, descrição, projeto ou responsável..."
-                className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="w-full px-4 py-3 pl-10 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-200 tasklist-search"
               />
               <svg className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -217,7 +217,7 @@ export const TaskList = () => {
           <div className="flex justify-between items-center mb-4">
             <button
               onClick={() => setShowAdvancedFilters(!showAdvancedFilters)}
-              className="flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium"
+              className="flex items-center text-blue-600 hover:text-blue-700 text-sm font-medium tasklist-btn"
             >
               <svg className={`w-4 h-4 mr-1 transition-transform ${showAdvancedFilters ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -226,14 +226,14 @@ export const TaskList = () => {
             </button>
             <button
               onClick={clearAllFilters}
-              className="text-gray-500 hover:text-gray-700 text-sm"
+              className="text-gray-500 hover:text-gray-700 text-sm tasklist-btn"
             >
               Limpar Filtros
             </button>
           </div>
 
           {/* Filtros básicos sempre visíveis */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 tasklist-filters">
             <div>
               <label className="block text-sm font-medium text-blue-600 mb-1">
                 Status
@@ -241,7 +241,7 @@ export const TaskList = () => {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-200 tasklist-select"
               >
                 <option value="all">Todos os Status</option>
                 <option value="to-do">Pendente</option>
@@ -256,7 +256,7 @@ export const TaskList = () => {
               <select
                 value={projectFilter}
                 onChange={(e) => setProjectFilter(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-200 tasklist-select"
               >
                 <option value="all">Todos os Projetos</option>
                 {projects.map((project) => (
@@ -273,7 +273,7 @@ export const TaskList = () => {
               <select
                 value={priorityFilter}
                 onChange={(e) => setPriorityFilter(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-200"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-200 tasklist-select"
               >
                 <option value="all">Todas as Prioridades</option>
                 <option value="urgent">Urgente</option>
@@ -287,7 +287,7 @@ export const TaskList = () => {
           {/* Filtros avançados */}
           {showAdvancedFilters && (
             <div className="mt-4 pt-4 border-t border-gray-200">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 tasklist-filters">
                 <div>
                   <label className="block text-sm font-medium text-blue-600 mb-1">
                     Responsável
@@ -295,7 +295,7 @@ export const TaskList = () => {
                   <select
                     value={assigneeFilter}
                     onChange={(e) => setAssigneeFilter(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-200 tasklist-select"
                   >
                     <option value="all">Todos os Responsáveis</option>
                     {assignees.map((assignee) => (
@@ -312,7 +312,7 @@ export const TaskList = () => {
                   <select
                     value={dateFilter}
                     onChange={(e) => setDateFilter(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-200"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg text-black focus:outline-none focus:ring-2 focus:ring-blue-200 tasklist-select"
                   >
                     <option value="all">Todas as Datas</option>
                     <option value="today">Vence Hoje</option>
@@ -333,8 +333,8 @@ export const TaskList = () => {
         </div>
 
         {/* Tabela de tarefas */}
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
+        <div className="tasklist-table-wrapper">
+          <table className="min-w-full divide-y divide-gray-200 tasklist-table">
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -410,7 +410,7 @@ export const TaskList = () => {
                         <select
                           value={task.status}
                           onChange={(e) => handleStatusChange(task.id, e.target.value as Task['status'])}
-                          className="text-xs border border-gray-300 rounded px-2 py-1 text-black"
+                          className="text-xs border border-gray-300 rounded px-2 py-1 text-black tasklist-select"
                         >
                           <option value="to-do">Pendente</option>
                           <option value="in-progress">Em Progresso</option>
@@ -418,7 +418,7 @@ export const TaskList = () => {
                         </select>
                         <button
                           onClick={() => handleDelete(task.id)}
-                          className="text-red-600 hover:text-red-900"
+                          className="text-red-600 hover:text-red-900 tasklist-btn"
                           title="Deletar tarefa"
                         >
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

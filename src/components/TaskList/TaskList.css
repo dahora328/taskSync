@@ -1,0 +1,59 @@
+/* Container principal */
+@media (max-width: 900px) {
+  .tasklist-filters {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .tasklist-filters {
+    grid-template-columns: 1fr !important;
+    gap: 0.5rem !important;
+  }
+  .tasklist-search {
+    padding: 0.5rem 0.5rem 0.5rem 2.5rem !important;
+    font-size: 15px !important;
+  }
+  .tasklist-table th,
+  .tasklist-table td {
+    padding: 0.5rem 0.5rem !important;
+    font-size: 13px !important;
+  }
+  .tasklist-table {
+    min-width: 600px;
+  }
+  .tasklist-btn,
+  .tasklist-select {
+    font-size: 14px !important;
+    padding: 0.5rem 0.75rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .tasklist-table th,
+  .tasklist-table td {
+    font-size: 12px !important;
+    padding: 0.4rem 0.3rem !important;
+  }
+  .tasklist-search {
+    font-size: 13px !important;
+  }
+}
+
+/* Rolagem horizontal para tabela */
+.tasklist-table-wrapper {
+  overflow-x: auto;
+  width: 100%;
+}
+
+/* Ajuste para botões e selects */
+.tasklist-btn {
+  font-size: 15px;
+  padding: 0.6rem 1.1rem;
+  border-radius: 0.5rem;
+}
+.tasklist-select {
+  font-size: 15px;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+}

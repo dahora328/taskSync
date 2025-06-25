@@ -93,4 +93,22 @@
   .auth-title {
     font-size: 1.5rem;
   }
+}
+
+@media (max-width: 480px) {
+  .auth-form {
+    padding: 1rem;
+    max-width: 100vw;
+  }
+  .auth-title {
+    font-size: 1.1rem;
+  }
+  .auth-input {
+    font-size: 0.95rem;
+    padding: 0.4rem 0.7rem;
+  }
+  .auth-button {
+    font-size: 1rem;
+    padding: 0.6rem;
+  }
 } 
