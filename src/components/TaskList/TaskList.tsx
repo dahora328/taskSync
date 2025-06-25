@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { useToast } from '../Toast/ToastContext';
 
+interface Comment {
+  id: number;
+  text: string;
+  author: string;
+  createdAt: string;
+}
+
 interface Task {
   id: number;
   title: string;
@@ -11,6 +18,7 @@ interface Task {
   project: string;
   assignee: string;
   createdAt: string;
+  comments: Comment[];
 }
 
 const mockTasks: Task[] = [
@@ -24,6 +32,20 @@ const mockTasks: Task[] = [
     project: 'Frontend',
     assignee: 'João Silva',
     createdAt: '2024-01-01',
+    comments: [
+      {
+        id: 1,
+        text: 'Começando a implementar o sistema de autenticação com JWT',
+        author: 'João Silva',
+        createdAt: '2024-01-02T10:30:00',
+      },
+      {
+        id: 2,
+        text: 'Preciso de ajuda com a validação de tokens',
+        author: 'Maria Santos',
+        createdAt: '2024-01-03T14:20:00',
+      },
+    ],
   },
   {
     id: 2,
@@ -35,6 +57,14 @@ const mockTasks: Task[] = [
     project: 'Backend',
     assignee: 'Maria Santos',
     createdAt: '2023-12-28',
+    comments: [
+      {
+        id: 3,
+        text: 'API finalizada e testada com sucesso!',
+        author: 'Maria Santos',
+        createdAt: '2024-01-09T16:45:00',
+      },
+    ],
   },
   {
     id: 3,
@@ -46,6 +76,7 @@ const mockTasks: Task[] = [
     project: 'UI/UX',
     assignee: 'Pedro Costa',
     createdAt: '2024-01-05',
+    comments: [],
   },
   {
     id: 4,
@@ -57,6 +88,7 @@ const mockTasks: Task[] = [
     project: 'QA',
     assignee: 'Ana Oliveira',
     createdAt: '2024-01-08',
+    comments: [],
   },
   {
     id: 5,
@@ -68,6 +100,14 @@ const mockTasks: Task[] = [
     project: 'Frontend',
     assignee: 'João Silva',
     createdAt: '2024-01-10',
+    comments: [
+      {
+        id: 4,
+        text: 'Identificado o problema: renderização desnecessária de componentes',
+        author: 'João Silva',
+        createdAt: '2024-01-11T09:15:00',
+      },
+    ],
   },
   {
     id: 6,
@@ -79,6 +119,7 @@ const mockTasks: Task[] = [
     project: 'Backend',
     assignee: 'Maria Santos',
     createdAt: '2023-12-30',
+    comments: [],
   },
 ];
 
@@ -118,6 +159,8 @@ export const TaskList = () => {
   const [dateFilter, setDateFilter] = useState<string>('all');
   const [search, setSearch] = useState('');
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
+  const [expandedTask, setExpandedTask] = useState<number | null>(null);
+  const [newComment, setNewComment] = useState('');
 
   const filteredTasks = tasks.filter((task) => {
     // Busca por texto (título, descrição, projeto, responsável)
@@ -178,6 +221,39 @@ export const TaskList = () => {
     const taskToDelete = tasks.find(task => task.id === taskId);
     setTasks(tasks.filter(task => task.id !== taskId));
     showToast(`Tarefa "${taskToDelete?.title}" removida com sucesso`, 'success');
+  };
+
+  const handleAddComment = (taskId: number) => {
+    if (!newComment.trim()) return;
+    
+    const comment: Comment = {
+      id: Date.now(),
+      text: newComment.trim(),
+      author: 'Usuário Atual',
+      createdAt: new Date().toISOString(),
+    };
+
+    setTasks(tasks.map(task => 
+      task.id === taskId 
+        ? { ...task, comments: [...task.comments, comment] }
+        : task
+    ));
+    
+    setNewComment('');
+    showToast('Comentário adicionado com sucesso!', 'success');
+  };
+
+  const handleDeleteComment = (taskId: number, commentId: number) => {
+    setTasks(tasks.map(task => 
+      task.id === taskId 
+        ? { ...task, comments: task.comments.filter(c => c.id !== commentId) }
+        : task
+    ));
+    showToast('Comentário removido com sucesso!', 'success');
+  };
+
+  const toggleTaskExpansion = (taskId: number) => {
+    setExpandedTask(expandedTask === taskId ? null : taskId);
   };
 
   const clearAllFilters = () => {
@@ -356,6 +432,9 @@ export const TaskList = () => {
                   Vencimento
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Comentários
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Ações
                 </th>
               </tr>
@@ -363,7 +442,7 @@ export const TaskList = () => {
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredTasks.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={8} className="px-6 py-8 text-center text-gray-500">
                     <div className="flex flex-col items-center">
                       <svg className="w-12 h-12 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
@@ -375,59 +454,127 @@ export const TaskList = () => {
                 </tr>
               ) : (
                 filteredTasks.map((task) => (
-                  <tr key={task.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4">
-                      <div className="text-sm font-medium text-gray-900">
-                        {task.title}
-                      </div>
-                      {task.description && (
-                        <div className="text-sm text-gray-500 mt-1">
-                          {task.description}
+                  <>
+                    <tr key={task.id} className="hover:bg-gray-50">
+                      <td className="px-6 py-4">
+                        <div className="text-sm font-medium text-gray-900">
+                          {task.title}
                         </div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{task.project}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${statusColors[task.status]}`}>
-                        {statusLabels[task.status]}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${priorityColors[task.priority]}`}>
-                        {priorityLabels[task.priority]}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{task.assignee}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {new Date(task.dueDate).toLocaleDateString('pt-BR')}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-2">
-                        <select
-                          value={task.status}
-                          onChange={(e) => handleStatusChange(task.id, e.target.value as Task['status'])}
-                          className="text-xs border border-gray-300 rounded px-2 py-1 text-black tasklist-select"
-                        >
-                          <option value="to-do">Pendente</option>
-                          <option value="in-progress">Em Progresso</option>
-                          <option value="done">Concluída</option>
-                        </select>
+                        {task.description && (
+                          <div className="text-sm text-gray-500 mt-1">
+                            {task.description}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{task.project}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${statusColors[task.status]}`}>
+                          {statusLabels[task.status]}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${priorityColors[task.priority]}`}>
+                          {priorityLabels[task.priority]}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">{task.assignee}</div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        {new Date(task.dueDate).toLocaleDateString('pt-BR')}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <button
-                          onClick={() => handleDelete(task.id)}
-                          className="text-red-600 hover:text-red-900 tasklist-btn"
-                          title="Deletar tarefa"
+                          onClick={() => toggleTaskExpansion(task.id)}
+                          className="flex items-center text-blue-600 hover:text-blue-800 text-sm"
                         >
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                           </svg>
+                          {task.comments.length} comentário{task.comments.length !== 1 ? 's' : ''}
                         </button>
-                      </div>
-                    </td>
-                  </tr>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div className="flex space-x-2">
+                          <select
+                            value={task.status}
+                            onChange={(e) => handleStatusChange(task.id, e.target.value as Task['status'])}
+                            className="text-xs border border-gray-300 rounded px-2 py-1 text-black tasklist-select"
+                          >
+                            <option value="to-do">Pendente</option>
+                            <option value="in-progress">Em Progresso</option>
+                            <option value="done">Concluída</option>
+                          </select>
+                          <button
+                            onClick={() => handleDelete(task.id)}
+                            className="text-red-600 hover:text-red-900 tasklist-btn"
+                            title="Deletar tarefa"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                    {expandedTask === task.id && (
+                      <tr>
+                        <td colSpan={8} className="px-6 py-4 bg-gray-50">
+                          <div className="space-y-4">
+                            <h4 className="font-medium text-gray-900">Comentários</h4>
+                            {task.comments.length === 0 ? (
+                              <p className="text-gray-500 text-sm">Nenhum comentário ainda.</p>
+                            ) : (
+                              <div className="space-y-3">
+                                {task.comments.map((comment) => (
+                                  <div key={comment.id} className="bg-white p-3 rounded-lg border">
+                                    <div className="flex justify-between items-start">
+                                      <div className="flex-1">
+                                        <p className="text-sm text-gray-900">{comment.text}</p>
+                                        <div className="flex items-center mt-2 text-xs text-gray-500">
+                                          <span className="font-medium">{comment.author}</span>
+                                          <span className="mx-2">•</span>
+                                          <span>{new Date(comment.createdAt).toLocaleString('pt-BR')}</span>
+                                        </div>
+                                      </div>
+                                      <button
+                                        onClick={() => handleDeleteComment(task.id, comment.id)}
+                                        className="text-red-500 hover:text-red-700 ml-2"
+                                        title="Deletar comentário"
+                                      >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                      </button>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                            <div className="flex gap-2">
+                              <input
+                                type="text"
+                                value={newComment}
+                                onChange={(e) => setNewComment(e.target.value)}
+                                placeholder="Adicionar comentário..."
+                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+                                onKeyPress={(e) => e.key === 'Enter' && handleAddComment(task.id)}
+                              />
+                              <button
+                                onClick={() => handleAddComment(task.id)}
+                                disabled={!newComment.trim()}
+                                className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                Comentar
+                              </button>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </>
                 ))
               )}
             </tbody>
