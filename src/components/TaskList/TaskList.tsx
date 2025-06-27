@@ -559,7 +559,7 @@ export const TaskList = () => {
                                 value={newComment}
                                 onChange={(e) => setNewComment(e.target.value)}
                                 placeholder="Adicionar comentário..."
-                                className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
+                                className="flex-1 px-3 py-2 border text-black border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-200"
                                 onKeyPress={(e) => e.key === 'Enter' && handleAddComment(task.id)}
                               />
                               <button
