@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { useToast } from '../Toast/ToastContext';
+import { ConfirmationModal } from '../ConfirmationModal/ConfirmationModal';
+import { useLocalStorage } from '../../hooks/useLocalStorage';
 
 interface Comment {
   id: number;
@@ -151,7 +153,7 @@ const priorityLabels = {
 
 export const TaskList = () => {
   const { showToast } = useToast();
-  const [tasks, setTasks] = useState<Task[]>(mockTasks);
+  const [tasks, setTasks] = useLocalStorage<Task[]>('tasks', mockTasks);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [projectFilter, setProjectFilter] = useState<string>('all');
   const [priorityFilter, setPriorityFilter] = useState<string>('all');
@@ -161,6 +163,27 @@ export const TaskList = () => {
   const [showAdvancedFilters, setShowAdvancedFilters] = useState(false);
   const [expandedTask, setExpandedTask] = useState<number | null>(null);
   const [newComment, setNewComment] = useState('');
+  
+  // Estados para modais de confirmação
+  const [deleteTaskModal, setDeleteTaskModal] = useState<{
+    isOpen: boolean;
+    taskId: number | null;
+    taskTitle: string;
+  }>({
+    isOpen: false,
+    taskId: null,
+    taskTitle: '',
+  });
+  
+  const [deleteCommentModal, setDeleteCommentModal] = useState<{
+    isOpen: boolean;
+    taskId: number | null;
+    commentId: number | null;
+  }>({
+    isOpen: false,
+    taskId: null,
+    commentId: null,
+  });
 
   const filteredTasks = tasks.filter((task) => {
     // Busca por texto (título, descrição, projeto, responsável)
@@ -217,10 +240,41 @@ export const TaskList = () => {
     showToast(`Status da tarefa alterado para ${statusLabels[newStatus]}`, 'info');
   };
 
-  const handleDelete = (taskId: number) => {
-    const taskToDelete = tasks.find(task => task.id === taskId);
-    setTasks(tasks.filter(task => task.id !== taskId));
-    showToast(`Tarefa "${taskToDelete?.title}" removida com sucesso`, 'success');
+  const handleDeleteClick = (taskId: number, taskTitle: string) => {
+    setDeleteTaskModal({
+      isOpen: true,
+      taskId,
+      taskTitle,
+    });
+  };
+
+  const handleDeleteConfirm = () => {
+    if (deleteTaskModal.taskId) {
+      const taskToDelete = tasks.find(task => task.id === deleteTaskModal.taskId);
+      setTasks(tasks.filter(task => task.id !== deleteTaskModal.taskId));
+      showToast(`Tarefa "${taskToDelete?.title}" removida com sucesso`, 'success');
+    }
+    setDeleteTaskModal({ isOpen: false, taskId: null, taskTitle: '' });
+  };
+
+  const handleDeleteCommentClick = (taskId: number, commentId: number) => {
+    setDeleteCommentModal({
+      isOpen: true,
+      taskId,
+      commentId,
+    });
+  };
+
+  const handleDeleteCommentConfirm = () => {
+    if (deleteCommentModal.taskId && deleteCommentModal.commentId) {
+      setTasks(tasks.map(task => 
+        task.id === deleteCommentModal.taskId 
+          ? { ...task, comments: task.comments.filter(c => c.id !== deleteCommentModal.commentId) }
+          : task
+      ));
+      showToast('Comentário removido com sucesso!', 'success');
+    }
+    setDeleteCommentModal({ isOpen: false, taskId: null, commentId: null });
   };
 
   const handleAddComment = (taskId: number) => {
@@ -243,15 +297,6 @@ export const TaskList = () => {
     showToast('Comentário adicionado com sucesso!', 'success');
   };
 
-  const handleDeleteComment = (taskId: number, commentId: number) => {
-    setTasks(tasks.map(task => 
-      task.id === taskId 
-        ? { ...task, comments: task.comments.filter(c => c.id !== commentId) }
-        : task
-    ));
-    showToast('Comentário removido com sucesso!', 'success');
-  };
-
   const toggleTaskExpansion = (taskId: number) => {
     setExpandedTask(expandedTask === taskId ? null : taskId);
   };
@@ -270,7 +315,7 @@ export const TaskList = () => {
   const assignees = Array.from(new Set(tasks.map(task => task.assignee)));
 
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-6xl mx-auto">
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
         {/* Barra de busca */}
         <div className="p-6 border-b border-gray-200">
@@ -508,7 +553,7 @@ export const TaskList = () => {
                             <option value="done">Concluída</option>
                           </select>
                           <button
-                            onClick={() => handleDelete(task.id)}
+                            onClick={() => handleDeleteClick(task.id, task.title)}
                             className="text-red-600 hover:text-red-900 tasklist-btn"
                             title="Deletar tarefa"
                           >
@@ -540,7 +585,7 @@ export const TaskList = () => {
                                         </div>
                                       </div>
                                       <button
-                                        onClick={() => handleDeleteComment(task.id, comment.id)}
+                                        onClick={() => handleDeleteCommentClick(task.id, comment.id)}
                                         className="text-red-500 hover:text-red-700 ml-2"
                                         title="Deletar comentário"
                                       >
@@ -581,6 +626,29 @@ export const TaskList = () => {
           </table>
         </div>
       </div>
+      
+      {/* Modais de confirmação */}
+      <ConfirmationModal
+        isOpen={deleteTaskModal.isOpen}
+        onClose={() => setDeleteTaskModal({ isOpen: false, taskId: null, taskTitle: '' })}
+        onConfirm={handleDeleteConfirm}
+        title="Excluir Tarefa"
+        message={`Tem certeza que deseja excluir a tarefa "${deleteTaskModal.taskTitle}"? Esta ação não pode ser desfeita.`}
+        confirmText="Excluir"
+        cancelText="Cancelar"
+        type="danger"
+      />
+      
+      <ConfirmationModal
+        isOpen={deleteCommentModal.isOpen}
+        onClose={() => setDeleteCommentModal({ isOpen: false, taskId: null, commentId: null })}
+        onConfirm={handleDeleteCommentConfirm}
+        title="Excluir Comentário"
+        message="Tem certeza que deseja excluir este comentário? Esta ação não pode ser desfeita."
+        confirmText="Excluir"
+        cancelText="Cancelar"
+        type="danger"
+      />
     </div>
   );
 }; 

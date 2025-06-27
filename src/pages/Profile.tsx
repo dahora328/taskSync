@@ -1,5 +1,8 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
+import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useToast } from '../components/Toast/ToastContext';
 import './Profile.css';
 
 interface UserProfile {
@@ -17,8 +20,14 @@ const initialProfile: UserProfile = {
 };
 
 export default function Profile() {
-  const [profile, setProfile] = useState<UserProfile>(initialProfile);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const { user, updateUser } = useAuth();
+  const { showToast } = useToast();
+  const [profile, setProfile] = useLocalStorage<UserProfile>('userProfile', {
+    ...initialProfile,
+    name: user?.name || '',
+    email: user?.email || '',
+  });
+  const [photoPreview, setPhotoPreview] = useState<string | null>(profile.photo);
   const [success, setSuccess] = useState(false);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -40,7 +49,15 @@ export default function Profile() {
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    
+    // Atualizar dados do usuário no contexto de autenticação
+    updateUser({
+      name: profile.name,
+      email: profile.email,
+    });
+    
     setSuccess(true);
+    showToast('Perfil atualizado com sucesso!', 'success');
     setTimeout(() => setSuccess(false), 2000);
   };
 

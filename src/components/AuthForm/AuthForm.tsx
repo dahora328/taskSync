@@ -2,10 +2,9 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useToast } from '../Toast/ToastContext';
+import { useAuth } from '../../hooks/useAuth';
 import './AuthForm.css';
 
 // Schemas de validação
@@ -34,7 +33,7 @@ interface AuthFormProps {
 }
 
 export const AuthForm = ({ type }: AuthFormProps) => {
-  const navigate = useNavigate();
+  const { login, register: registerUser } = useAuth();
   const { showToast } = useToast();
   const [apiError, setApiError] = useState<string | null>(null);
 
@@ -52,22 +51,13 @@ export const AuthForm = ({ type }: AuthFormProps) => {
   const onSubmit = async (data: any) => {
     setApiError(null);
     try {
-      const url = isLogin ? '/api/login' : '/api/register';
-      const payload = isLogin
-        ? { email: data.email, password: data.password }
-        : { name: data.name, email: data.email, password: data.password };
-      const response = await axios.post(url, payload);
-      localStorage.setItem('token', response.data.token);
-      
       if (isLogin) {
-        showToast('Login realizado com sucesso!', 'success');
+        await login(data.email, data.password);
       } else {
-        showToast('Conta criada com sucesso!', 'success');
+        await registerUser(data.name, data.email, data.password);
       }
-      
-      navigate('/dashboard');
-    } catch (err: any) {
-      const errorMessage = err.response?.data?.message || 'Erro ao autenticar';
+    } catch (error: any) {
+      const errorMessage = error.message || 'Erro ao autenticar';
       setApiError(errorMessage);
       showToast(errorMessage, 'error');
     }
